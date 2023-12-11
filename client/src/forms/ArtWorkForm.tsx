@@ -1,35 +1,56 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import {
     Box,
     Button,
+  Card,
   Checkbox,
   CircularProgress,
-  Container,
   FormControlLabel,
   TextField,
 } from "@mui/material";
 import { Controller, useForm } from "react-hook-form";
 import ErrorAlert from "../components/ErrorAlert";
-import { useMutation, useQuery } from "react-query";
+import { useMutation } from "react-query";
 import postData from "../functions/postData";
-import { DETERMINE_ID, SUBMIT_ART_WORK } from "../api/urls";
-import fetchData from "../functions/fetchData";
+import { ADD_PHOTO, SUBMIT_ART_WORK } from "../api/urls";
+import { container_styles } from "../styles/art_works/artWorkForm";
+import { CLOUDINARY, PRESET } from "../api/cloudinary";
 
 export default function ArtWorkForm() {
   const { user } = useContext(AuthContext);
   const {
     control,
     getValues,
-    setValue,
     formState: { errors },
     reset,
     handleSubmit
   } = useForm();
 
+  const [photosArr, setPhotosArr] = useState<File[]>([])
   const submit_mutation = useMutation((input: unknown) =>
     submit_art_work(input)
   );
+
+  const cloudinary_mutation = useMutation(
+    async (input: unknown) => await submit_to_cloudinary(input), 
+    {
+      onSuccess: (res) => {
+        const userId = user.id;
+        const artWorkTitle = getValues("title");
+        const url = res.public_id;
+        photo_mutation.mutate({userId, artWorkTitle, url});
+      }
+    }
+  );
+
+  const art_work_mutation = useMutation(
+    async (input: unknown) => await submit_art_work(input), {
+      onSuccess: () => reset()
+    }
+  )
+
+  const photo_mutation = useMutation(async (input: unknown) =>await upload_photo(input));
 
   const submit_art_work = async (input: unknown) => {
     try {
@@ -38,14 +59,35 @@ export default function ArtWorkForm() {
       throw new Error(`Error: ${error}`);
     }
   };
+const submit_to_cloudinary = async (input: unknown) => {
+    try {
+      return await postData(CLOUDINARY, input);
+    } catch (error) {
+      throw new Error(`Error: ${error}`);
+    }
+  };
 
-  const { data } = useQuery( 'idsQuery', async () => await fetchData(DETERMINE_ID));
-
+  const upload_photo = async (input: unknown) => {
+    try {
+      return await postData(ADD_PHOTO, input)
+    } catch (error) {
+      throw new Error(`Error: ${error}`)
+    }
+  }
   const onSubmit = () => {
-    console.log(data)
+    photosArr.map((photo) => {
+      const formData = new FormData();
+      formData.append("file", photo);
+      formData.append("upload_preset", PRESET);
+
+      cloudinary_mutation.mutate(formData);
+
+      const input = { ...getValues(),  } 
+      art_work_mutation.mutate(input);
+    })
   }
   return (
-    <Container>
+    <Card sx={container_styles}>
       <Controller
         name="title"
         control={control}
@@ -103,6 +145,30 @@ export default function ArtWorkForm() {
       {errors.visible && (
         <ErrorAlert message={errors.visible.message as string} />
       )}
+      <Controller
+        name="avatar"
+        control={control}
+        rules={{ required: "At least a photo is required!" }}
+        render={({ field }) => (
+          <Button variant="contained">
+            Upload photos
+            <input
+              id="avatar-standard-basic"
+              type="file"
+              multiple
+              onChange={(e) => {
+                const photos = Array.from(e.target.files || []);
+                setPhotosArr((prevPhotos) => [...prevPhotos, ...photos]);
+                field.onChange([...field.value, ...photos]);
+              }}
+              // style={{display: 'none'}}
+            />
+          </Button>
+        )}
+      />
+      {errors.avatar && (
+        <ErrorAlert message={errors.avatar.message as string} />
+      )}
       {submit_mutation.isLoading ? (
               <Box>
                 <CircularProgress />
@@ -117,6 +183,6 @@ export default function ArtWorkForm() {
                 REGISTER
               </Button>
             )}
-    </Container>
+    </Card>
   );
 }

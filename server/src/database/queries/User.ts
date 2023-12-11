@@ -65,6 +65,7 @@ export const login = async (req: any, res: any) => {
   );
 
   return res.json({
+    id: find_user.id,
     username: find_user.username,
     email: find_user.email,
     website: find_user.website,

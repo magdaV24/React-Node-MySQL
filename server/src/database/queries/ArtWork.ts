@@ -1,25 +1,25 @@
-import { ArtWorks } from "../entities/ArtWorks";
+import { ArtWorks, Visible } from "../entities/ArtWorks";
 
 export const create_entry = async (req: any, res: any) => {
-  const creator = req.body.creator;
+  const userId = req.body.userId;
   const title = req.body.title;
   const description = req.body.description;
   const visible = req.body.visible;
 
   await ArtWorks.insert({
     title,
-    creator,
+    userId,
     description,
     visible,
   })
-    .then(() => console.log("Success!"))
+    .then(() => res.json("Success!"))
     .catch((err) => console.log(err));
 };
 
 export const fetch_works_by_creator = async (req: any, res: any) => {
-  const creator = req.body.user;
+  const userId = req.body.userId;
 
-  const response = await ArtWorks.find({ where: { creator } });
+  const response = await ArtWorks.find({ where: { userId } });
   if (response.length === 0) {
     return;
   }
@@ -57,7 +57,7 @@ export const delete_entry = async (req: any, res: any) => {
 };
 
 export const fetch_if_public = async (req: any, res: any) => {
-  const entries = await ArtWorks.find({ where: { visible: "Visible" } });
+  const entries = await ArtWorks.find({ where: { visible: Visible.Public } });
 
   if (entries.length === 0) {
     return;
@@ -67,9 +67,9 @@ export const fetch_if_public = async (req: any, res: any) => {
 };
 
 export const fetch_user_public_works = async (req: any, res: any) => {
-  const creator = req.body.username;
+  const userId = req.body.userID;
   const entries = await ArtWorks.find({
-    where: { visible: "Visible", creator },
+    where: { visible: Visible.Public, userId },
   });
 
   if (entries.length === 0) {
@@ -79,14 +79,3 @@ export const fetch_user_public_works = async (req: any, res: any) => {
   return res.json(entries);
 };
 
-export const determine_id = async (req: any, res: any) => {
-  const count = await ArtWorks.createQueryBuilder("entity")
-    .orderBy("entity.id", "DESC")
-    .getOne()
-    .then((result) => {
-      if(result === null){
-        return res.json(1)
-      }
-      return res.json(result!.id + 1);
-    });
-};

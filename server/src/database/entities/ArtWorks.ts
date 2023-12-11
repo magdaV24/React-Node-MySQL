@@ -1,5 +1,9 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
 
+export enum Visible{
+    Private = "Private",
+    Public = "Public"
+}
 @Entity()
 export class ArtWorks extends BaseEntity{
     @PrimaryGeneratedColumn()
@@ -8,12 +12,12 @@ export class ArtWorks extends BaseEntity{
     @Column('varchar', {length: 50})
     title!: string;
 
-    @Column('varchar', { length: 50})
-    creator!: string;
+    @Column()
+    userId!: number;
 
     @Column("varchar", { length: 1000 })
     description!: string;
 
-    @Column('varchar', { length: 10})
-    visible!: string;
+    @Column('enum', {enum: Visible, default: Visible.Private}) 
+    visible!: Visible;
 }

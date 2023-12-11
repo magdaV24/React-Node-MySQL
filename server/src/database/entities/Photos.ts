@@ -9,7 +9,7 @@ export class Photos extends BaseEntity{
     userId!: number;
 
     @Column()
-    entryId!: number;
+    artWorkTitle!: number;
 
     @Column('varchar', { length: 50})
     url!: string;

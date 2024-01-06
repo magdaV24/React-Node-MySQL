@@ -11,7 +11,7 @@ export default function useFetchUserEntries(id: number | undefined) {
   const {
     data: userEntries,
     isLoading,
-    error: userEntriesError,
+    error,
   } = useQuery(
     `userEntries/${id}`,
     async () => {
@@ -29,7 +29,10 @@ export default function useFetchUserEntries(id: number | undefined) {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if(error){
+      authContext.setError(error as string)
+    }
+  }, [isLoading, authContext, error]);
 
-  return { userEntries, userEntriesError };
+  return { userEntries };
 }

@@ -11,7 +11,7 @@ export default function useFetchPublicEntries() {
   const {
     data: publicEntries,
     isLoading,
-    error: publicEntriesError,
+    error,
   } = useQuery(
     "publicEntriesQuery",
     async () => {
@@ -29,7 +29,10 @@ export default function useFetchPublicEntries() {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if(error){
+      authContext.setError(error as string)
+    }
+  }, [isLoading, authContext, error]);
 
-  return { publicEntries, publicEntriesError };
+  return { publicEntries};
 }

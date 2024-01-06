@@ -12,7 +12,7 @@ export default function useFetchEntryPhotos(uuid: string) {
   const {
     data: entryPhotos,
     isLoading,
-    error: entryPhotosError,
+    error,
   } = useQuery(
     `entryPhotosQuery/${uuid}`,
     async () => {
@@ -30,7 +30,10 @@ export default function useFetchEntryPhotos(uuid: string) {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if(error){
+      authContext.setError(error as string)
+    }
+  }, [isLoading, authContext, error]);
 
-  return { entryPhotos, entryPhotosError };
+  return { entryPhotos };
 }

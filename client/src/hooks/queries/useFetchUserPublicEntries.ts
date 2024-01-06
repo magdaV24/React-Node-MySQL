@@ -12,7 +12,7 @@ export default function useFetchUserPublicEntries(id: number | undefined) {
   const {
     data: userPublicEntries,
     isLoading,
-    error: userPublicEntriesError,
+    error,
   } = useQuery(
     `userPublicEntries/${id}`,
     async () => {
@@ -30,7 +30,10 @@ export default function useFetchUserPublicEntries(id: number | undefined) {
     if (isLoading) {
       authContext.setOpenBackdrop(true);
     }
-  }, [isLoading, authContext]);
+    if(error){
+      authContext.setError(error as string)
+    }
+  }, [isLoading, authContext, error]);
 
-  return { userPublicEntries, userPublicEntriesError };
+  return { userPublicEntries };
 }

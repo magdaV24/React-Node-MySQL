@@ -1,10 +1,13 @@
-import { Alert } from "@mui/material";
+import { Alert, Snackbar } from "@mui/material";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContextProvider";
 
-interface Props{
-    message: string;
-}
-export default function SuccessAlert ({message}: Props){
+export default function SuccessAlert (){
+
+    const { openMessage, handleCloseMessage, message } = useContext(AuthContext)
     return (
-        <Alert severity='success'>{message}</Alert>
+        <Snackbar open={openMessage} onClose={handleCloseMessage}>
+            <Alert severity='success'>{message}</Alert>
+        </Snackbar>
     )
 }

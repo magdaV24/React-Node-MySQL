@@ -13,23 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -52,6 +35,35 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.entries_wrapper {
+  width: 100%;
+  max-width: 1200px; 
+  min-height: 80vh;
+  height: fit-content;
+  margin: 0 auto; 
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  grid-gap: 10px;
+  padding: 2.9em;
+  box-sizing: border-box;
+}
+
+.right{
+  margin-left: -2vw;
+}
+
+@media screen and (min-width: 600px) {
+  .entries_wrapper {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .entries_wrapper {
+      grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 @media (prefers-color-scheme: light) {

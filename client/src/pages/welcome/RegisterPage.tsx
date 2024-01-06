@@ -1,14 +1,16 @@
-import { Container, Card, CardHeader, Typography } from "@mui/material";
-import Register from "../../forms/Register";
+import { Container, Card, CardHeader, Typography, Link } from "@mui/material";
+import RegisterForm from "../../forms/RegisterForm";
 
 import HowToRegIcon from "@mui/icons-material/HowToReg";
-import { card_styles } from "../../styles/register/registerPage";
+import { cardStyles, link, pageWrapper } from "../../styles/app";
+import Bar from "../../components/Bar";
 
 export default function RegisterPage() {
   return (
-    <Container className="body">
+    <Container sx={pageWrapper}>
+      <Bar />
       <Card
-        sx={card_styles}
+        sx={cardStyles}
       >
         <CardHeader
           avatar={<HowToRegIcon color="primary" sx={{ fontSize: "3.5rem" }} />}
@@ -18,7 +20,8 @@ export default function RegisterPage() {
             </Typography>
           }
         />
-        <Register />
+        <RegisterForm />
+        <Link href='/login' sx={link}>Already have an account? Log in now!</Link>
       </Card>
     </Container>
   );

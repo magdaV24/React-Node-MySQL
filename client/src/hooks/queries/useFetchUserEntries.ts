@@ -1,13 +1,14 @@
 import { useQuery } from "react-query";
 import { useAuthContext } from "../useAuthContext";
 import { useEffect } from "react";
-import useFetchData from "../useFetchData";
+// import useFetchData from "../useFetchData";
 import { Entry } from "../../types/Entry";
 import { FETCH_USER_ENTRIES } from "../../api/urls";
+import useFetchDataWithToken from "../useFetchDataWithToken";
 
 export default function useFetchUserEntries(id: number | undefined) {
   const authContext = useAuthContext();
-  const fetchData = useFetchData()
+  const fetchData = useFetchDataWithToken()
   const {
     data: userEntries,
     isLoading,

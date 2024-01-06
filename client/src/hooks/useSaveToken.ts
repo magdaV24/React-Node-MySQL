@@ -6,7 +6,6 @@ export function useSaveToken() {
   const saveToken = (token: string) => {
     const decodedToken = jwtDecode(token);
     const expiration = decodedToken.exp! * 1000;
-
     authContext.setToken({ token: decodedToken, expiration: expiration });
   };
   return saveToken;

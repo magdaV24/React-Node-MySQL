@@ -1,10 +1,10 @@
 import { useMutation } from "react-query";
 import { EDIT_FIELDS } from "../../api/urls";
-import usePostData from "../usePostData";
 import { useAuthContext } from "../useAuthContext";
+import usePostDataWithToken from "../usePostDataWithToken";
 
 const useEditFieldsMutation = (id: number) => {
-  const postData = usePostData();
+  const postData = usePostDataWithToken();
   const authContext = useAuthContext();
   const mutation = useMutation(
     async (input: unknown) => await postData(`${EDIT_FIELDS}/${id}`, input),

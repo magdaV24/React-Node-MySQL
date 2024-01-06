@@ -6,8 +6,8 @@ import { useAuthContext } from "../useAuthContext";
 const useDeleteEntryMutation = () => {
   const deleteData = useDeleteData();
   const authContext = useAuthContext();
-  const mutation = useMutation(async (id: number) => {
-    await deleteData(`${DELETE_ENTRY}/${id}`),
+  const mutation = useMutation(async (uuid: string) => {
+    await deleteData(`${DELETE_ENTRY}/${uuid}`),
       {
         onSuccess: (data: string) => {
           authContext.setMessage(data);
@@ -20,7 +20,7 @@ const useDeleteEntryMutation = () => {
 
 export default function useDeleteEntry() {
   const { mutation, deleteEntryLoading } = useDeleteEntryMutation();
-  const deleteEntry = async (input: number) => {
+  const deleteEntry = async (input: string) => {
     try {
       await mutation.mutateAsync(input);
     } catch (error) {

@@ -14,16 +14,16 @@ import { PRESET } from "../../api/cloudinary";
 
 export default function EditEntryPage() {
   const { entry, disabled, setDisabled, user } = useContext(AuthContext);
-  const uuid = entry!.uuid
+  const uuid = entry!.uuid;
   const { entryPhotos } = useFetchEntryPhotos(uuid);
 
   const { control, getValues, handleSubmit } = useForm();
 
   const add_photo = useAddPhoto();
   const submit_to_cloudinary = useCloudinary();
-  
+
   const onSubmit = async () => {
-    setDisabled(true)
+    setDisabled(true);
     const photo = getValues("photo");
     if (photo === undefined) {
       return console.log("Undefined photo");
@@ -36,15 +36,15 @@ export default function EditEntryPage() {
       const id = await submit_to_cloudinary(formData);
       const input = {
         url: id,
-        userId: user.id,
-        uuid: entry!.uuid
+        userId: user!.id,
+        uuid: entry!.uuid,
       };
-      await add_photo(input)
-      setDisabled(false)
+      await add_photo(input);
+      setDisabled(false);
     } catch (error) {
-      throw new Error(`Error: ${error}`);
+      console.log(`Error: ${error}`);
     }
-  }
+  };
 
   return (
     <Container sx={pageWrapper}>
@@ -59,8 +59,16 @@ export default function EditEntryPage() {
           width: "40vw",
         }}
       >
-        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-star', gap: 1, mb: 1}}>
-          <AutoAwesomeSharpIcon sx={{color: "primary.light"}} />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-star",
+            gap: 1,
+            mb: 1,
+          }}
+        >
+          <AutoAwesomeSharpIcon sx={{ color: "primary.light" }} />
           <Typography variant="h5" color="primary.light" sx={{ mr: 9 }}>
             EDIT ENTRY
           </Typography>
@@ -71,31 +79,41 @@ export default function EditEntryPage() {
               <EditPhoto id={photo.id} url={photo.url} key={photo.id} />
             ))}
         </Box>
-        <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'flex-star', gap: 1, mb: 1, mt: 1}}>
-        <Controller
-        name="photo"
-        control={control}
-        render={({ field }) => (
-          <Button variant="contained" disabled={disabled}>
-            Choose photo
-            <input
-              id="avatar-standard-basic"
-              type="file"
-              onChange={(e) => field.onChange(e.target.files)}
-              // style={{display: 'none'}}
-            />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-star",
+            gap: 1,
+            mb: 1,
+            mt: 1,
+          }}
+        >
+          <Controller
+            name="photo"
+            control={control}
+            render={({ field }) => (
+              <Button variant="contained" disabled={disabled}>
+                Choose photo
+                <input
+                  id="avatar-standard-basic"
+                  type="file"
+                  onChange={(e) => field.onChange(e.target.files)}
+                  // style={{display: 'none'}}
+                />
+              </Button>
+            )}
+          />
+          <Button
+            disabled={disabled}
+            onClick={handleSubmit(onSubmit)}
+            variant="outlined"
+            size="large"
+          >
+            ADD PHOTO
           </Button>
-        )}
-      />
-      <Button disabled={disabled} onClick={handleSubmit(onSubmit)} variant='outlined' size="large">ADD PHOTO</Button>
-
         </Box>
-        <EditFields
-          title={entry?.title}
-          description={entry?.description}
-          visible={entry?.visible}
-          id={entry!.id}
-        />
+        <EditFields entry={entry!} />
       </Box>
     </Container>
   );

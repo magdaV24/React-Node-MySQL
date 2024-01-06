@@ -35,7 +35,7 @@ export default function EntryThumbnailPrivate({ uuid, id }: Props) {
   const { deleteEntry } = useDeleteEntry();
   const handleDeleteEntry = async () => {
     try {
-      await deleteEntry(id);
+      await deleteEntry(uuid);
     } catch (error) {
       throw new Error(`Error: ${error}`);
     }

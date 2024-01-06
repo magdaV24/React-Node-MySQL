@@ -10,19 +10,20 @@ import useEditFields from "../hooks/mutations/useEditFieldsMutation";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContextProvider";
 import { useAuthContext } from "../hooks/useAuthContext";
+import { Entry } from "../types/Entry";
 
 interface Props {
-  title: string | undefined;
-  description: string | undefined;
-  visible: boolean | undefined;
-  id: number
+  entry: Entry;
 }
 
-export default function EditFields({ title, description, visible, id }: Props) {
+export default function EditFields({ entry }: Props) {
   const { control, handleSubmit, getValues } = useForm();
   const { disabled } = useContext(AuthContext);
   const authContext = useAuthContext()
-
+ const id = entry.id;
+ const title = entry.title;
+ const description = entry.description;
+ const visible = entry.visible;
   const { edit_fields } = useEditFields(id);
 
   const onSubmit = async () => {

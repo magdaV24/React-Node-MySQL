@@ -107,11 +107,18 @@ export const edit_entry_fields = async (req: any, res: any) => {
 };
 
 export const delete_entry = async (req: any, res: any) => {
-  const id = req.params.id;
+  const uuid = req.params.uuid;
   try {
-    const entry = await Entries.findOne({ where: { id } });
+    const entry = await Entries.findOne({ where: { uuid: uuid } });
+    const photos = await Photos.find({where: { uuid: uuid}});
     if (entry) {
       await Entries.delete(entry.id);
+      if(photos.length > 0){
+        photos.forEach(async(photo) => {
+          await Photos.delete(photo.id)
+          await cloudinary.v2.uploader.destroy(photo.url);
+        })
+      }
     }
     return res.status(200).json("Entry deleted successfully!");
   } catch (error) {
